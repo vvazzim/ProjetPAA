@@ -34,9 +34,9 @@ Une classe représentant une ville au sein de la Communauté d'Agglomération.
 - Ajout de zones de recharge : Paris, Marseille
 - Suppression de la zone de recharge à Paris
 
-## Auteur
+## Auteurs
 
-[Your Name]
+Ryan MANGOMBE / Maciva Moubarki / Wassim CHIKHI
 
 ## Licence
 
