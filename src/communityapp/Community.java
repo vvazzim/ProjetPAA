@@ -47,6 +47,8 @@ public class Community {
                     roadMap.put(city2, new ArrayList<>());
                 }
                 roadMap.get(city2).add(city1);
+
+                notifyObservers(city1, city2); // Notifie les observateurs qu'une route a été ajoutée
             } else {
                 System.out.println("Ville(s) non trouvée(s). La route n'a pas été ajoutée.");
             }
@@ -110,7 +112,6 @@ public class Community {
         return false;
     }
 
-
     private void updateAccessibilityConstraint(String city) {
         List<String> neighbors = roadMap.get(city);
         for (String neighbor : neighbors) {
@@ -158,4 +159,3 @@ public class Community {
         }
     }
 }
-

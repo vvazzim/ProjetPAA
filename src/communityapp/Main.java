@@ -1,4 +1,5 @@
 package communityapp;
+
 import java.util.Scanner;
 
 public class Main {
@@ -8,6 +9,7 @@ public class Main {
 
         while (true) {
             clearConsole(); // Efface la console
+
             System.out.println("Bienvenue dans le programme de configuration de la Communauté d'Agglomération.");
             System.out.print("Combien de villes dans la CA ? ");
             int numCities = scanner.nextInt();
@@ -15,7 +17,7 @@ public class Main {
 
             // Créez les villes et ajoutez-les à la communauté
             for (int i = 0; i < numCities; i++) {
-                System.out.print("Nom de la ville " + (char)('A' + i) + ": ");
+                System.out.print("Nom de la ville " + (char) ('A' + i) + ": ");
                 String cityName = scanner.nextLine();
                 community.addCity(cityName);
             }
@@ -25,6 +27,7 @@ public class Main {
 
             while (true) {
                 clearConsole(); // Efface la console
+
                 System.out.println("\nMenu :");
                 System.out.println("1) Ajouter une route");
                 System.out.println("2) Terminer la configuration");
@@ -51,6 +54,7 @@ public class Main {
 
             while (true) {
                 clearConsole(); // Efface la console
+
                 System.out.println("\nMenu :");
                 System.out.println("1) Ajouter une zone de recharge");
                 System.out.println("2) Retirer une zone de recharge");
