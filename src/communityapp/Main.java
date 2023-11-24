@@ -6,6 +6,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Community community = Community.getInstance();
+        RechargeZoneObserver observer = new RechargeZoneObserver(community);
+
+        // Chemin du fichier
+        String filePath = "C:\\Users\\TRETEC\\eclipse-workspace\\PAAPro\\src\\communityapp\\community.txt";
 
         while (true) {
             clearConsole(); // Efface la console
@@ -22,8 +26,7 @@ public class Main {
                 community.addCity(cityName);
             }
 
-            // Créez un observateur pour afficher les changements
-            RechargeZoneObserver observer = new RechargeZoneObserver(community);
+            community.completeConfiguration();
 
             while (true) {
                 clearConsole(); // Efface la console
@@ -58,7 +61,9 @@ public class Main {
                 System.out.println("\nMenu :");
                 System.out.println("1) Ajouter une zone de recharge");
                 System.out.println("2) Retirer une zone de recharge");
-                System.out.println("3) Terminer");
+                System.out.println("3) Sauvegarder la communauté dans un fichier");
+                System.out.println("4) Charger la communauté depuis un fichier");
+                System.out.println("5) Terminer");
                 System.out.print("Votre choix : ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();  // Pour consommer la ligne vide
@@ -72,6 +77,14 @@ public class Main {
                     String city = scanner.nextLine();
                     community.removeRechargeZone(city);
                 } else if (choice == 3) {
+                    // Sauvegarde de la communauté dans le fichier
+                    CommunityFileHandler.saveCommunityToFile(community, filePath);
+                    System.out.println("Communauté sauvegardée avec succès !");
+                } else if (choice == 4) {
+                    // Chargement de la communauté depuis le fichier
+                    community = CommunityFileHandler.loadCommunityFromFile(filePath);
+                    System.out.println("Communauté chargée avec succès !");
+                } else if (choice == 5) {
                     break;
                 } else {
                     System.out.println("Choix invalide. Veuillez réessayer.");

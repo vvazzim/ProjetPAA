@@ -1,0 +1,5 @@
+ville(A).
+ville(B).
+ville(C).
+recharge(A).
+recharge(B).

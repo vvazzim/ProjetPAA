@@ -11,8 +11,6 @@ public class Community {
     private static Community instance;
     private Map<String, City> cities = new HashMap<>();
     private Map<String, List<String>> roadMap = new HashMap<>();
-    private Set<String> rechargeZones = new HashSet<>();
-    private List<RechargeZoneObserver> observers = new ArrayList<>();
     private boolean configurationCompleted = false;
 
     private Community() {
@@ -62,49 +60,61 @@ public class Community {
     }
 
     public void addRechargeZone(String city) {
-        if (cities.containsKey(city) && !rechargeZones.contains(city)) {
+        if (cities.containsKey(city)) {
+            City cityObj = cities.get(city);
+
             // Vérifie si l'ajout est initial ou non
-            boolean initialAddition = rechargeZones.isEmpty();
+            boolean initialAddition = cityObj.hasRechargeZone();
             if (!initialAddition && isAccessibilityConstraintViolated(city, true)) {
                 System.out.println("Impossible d'ajouter une zone de recharge à " + city + " (contrainte d'accessibilité violée).");
             } else {
-                rechargeZones.add(city);
+                cityObj.addRechargeZone();
                 notifyObserversRecharge(city, true);
+                updateAccessibilityConstraint(city);
             }
         } else {
-            System.out.println("Ville non trouvée ou zone de recharge déjà présente.");
+            System.out.println("Ville non trouvée.");
         }
     }
 
     public void removeRechargeZone(String city) {
-        if (rechargeZones.contains(city)) {
+        if (cities.containsKey(city)) {
+            City cityObj = cities.get(city);
+
             // Vérifie si le retrait viole la contrainte d'accessibilité
-            if (isAccessibilityConstraintViolated(city, false)) {
+            if (cityObj.hasRechargeZone() && isAccessibilityConstraintViolated(city, false)) {
                 System.out.println("Impossible de retirer la zone de recharge de " + city + " (contrainte d'accessibilité violée).");
             } else {
-                rechargeZones.remove(city);
+                cityObj.removeRechargeZone();
                 notifyObserversRecharge(city, false);
             }
         } else {
-            System.out.println("Aucune zone de recharge dans " + city);
+            System.out.println("Ville non trouvée.");
         }
     }
 
     private boolean isAccessibilityConstraintViolated(String city, boolean addingRechargeZone) {
         List<String> neighbors = roadMap.get(city);
 
+        // Vérifie si la liste des voisins est nulle
+        if (neighbors == null) {
+            return false;
+        }
+
         for (String neighbor : neighbors) {
+            City neighborCity = cities.get(neighbor);
+
             if (addingRechargeZone) {
                 // Si on ajoute une zone de recharge, vérifie que le voisin a toujours accès à une zone de recharge.
-                if (!rechargeZones.contains(neighbor)) {
+                if (!neighborCity.hasRechargeZone()) {
                     return true;
                 }
             } else {
                 // Si on retire une zone de recharge, vérifie que le voisin a toujours accès à une zone de recharge.
-                List<String> reachableRechargeZones = new ArrayList<>(rechargeZones);
+                List<String> reachableRechargeZones = new ArrayList<>(neighborCity.getCitiesWithRechargeZone());
                 reachableRechargeZones.addAll(neighbors); // Ajoute les voisins actuels comme accessibles
 
-                if (!reachableRechargeZones.contains(neighbor)) {
+                if (!reachableRechargeZones.contains(city)) {
                     return true;
                 }
             }
@@ -112,19 +122,35 @@ public class Community {
         return false;
     }
 
+
     private void updateAccessibilityConstraint(String city) {
         List<String> neighbors = roadMap.get(city);
+
+        // Vérifie si la liste des voisins est nulle
+        if (neighbors == null) {
+            return;
+        }
+
         for (String neighbor : neighbors) {
-            if (!rechargeZones.contains(neighbor)) {
+            City neighborCity = cities.get(neighbor);
+
+            if (!neighborCity.hasRechargeZone()) {
                 // La contrainte d'accessibilité est violée, réajuste la zone de recharge si possible
-                rechargeZones.add(neighbor);
+                neighborCity.addRechargeZone();
                 notifyObserversRecharge(neighbor, true);
             }
         }
     }
 
+
     public Set<String> getCitiesWithRechargeZone() {
-        return rechargeZones;
+        Set<String> citiesWithRecharge = new HashSet<>();
+        for (Map.Entry<String, City> entry : cities.entrySet()) {
+            if (entry.getValue().hasRechargeZone()) {
+                citiesWithRecharge.add(entry.getKey());
+            }
+        }
+        return citiesWithRecharge;
     }
 
     public Set<String> getCities() {
@@ -138,7 +164,8 @@ public class Community {
         return new HashSet<>();
     }
 
-    // Ajout d'observateurs
+    private List<RechargeZoneObserver> observers = new ArrayList<>();
+
     public void addObserver(RechargeZoneObserver observer) {
         observers.add(observer);
     }
