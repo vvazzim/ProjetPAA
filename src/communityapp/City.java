@@ -1,17 +1,15 @@
 package communityapp;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class City {
     private String name;
-    private boolean hasRechargeZone;
+    private RechargeZone rechargeZone; // Référence à la zone de recharge associée
 
     public City(String name) {
         this.name = name;
-        this.hasRechargeZone = false;
+        this.rechargeZone = null; // Initialisez à null car la ville n'est pas encore associée à une zone de recharge
     }
 
     public String getName() {
@@ -19,22 +17,30 @@ public class City {
     }
 
     public boolean hasRechargeZone() {
-        return hasRechargeZone;
+        return rechargeZone != null;
     }
 
-    public void addRechargeZone() {
-        this.hasRechargeZone = true;
+    public RechargeZone getRechargeZone() {
+        return rechargeZone;
+    }
+
+    public void addRechargeZone(RechargeZone rechargeZone) {
+        this.rechargeZone = rechargeZone;
+        rechargeZone.addCity(name);
     }
 
     public void removeRechargeZone() {
-        this.hasRechargeZone = false;
+        if (rechargeZone != null) {
+            rechargeZone.removeCity(name);
+            this.rechargeZone = null;
+        }
     }
 
-    public Set<String> getCitiesWithRechargeZone() {
-        Set<String> citiesWithRecharge = new HashSet<>();
-        if (hasRechargeZone) {
-            citiesWithRecharge.add(name);
+    public Set<String> getRechargeZones() {
+        Set<String> rechargeZones = new HashSet<>();
+        if (hasRechargeZone()) {
+            rechargeZones.addAll(rechargeZone.getCities());
         }
-        return citiesWithRecharge;
+        return rechargeZones;
     }
 }

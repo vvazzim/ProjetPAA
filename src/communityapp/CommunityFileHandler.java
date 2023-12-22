@@ -1,64 +1,62 @@
 package communityapp;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
+import java.io.*;
+import java.util.List;
+import java.util.Map;
 
 public class CommunityFileHandler {
 
-    public static void saveCommunityToFile(Community community, String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+	public static void saveCommunityToFile(Community community, String filePath) {
+        try (PrintWriter writer = new PrintWriter(filePath)) {
+            // Save cities
             for (String cityName : community.getCities()) {
-                writer.write("ville(" + cityName + ").");
-                writer.newLine();
+                writer.println("ville(" + cityName + ").");
             }
 
-            for (String cityName : community.getCitiesWithRechargeZone()) {
-                writer.write("recharge(" + cityName + ").");
-                writer.newLine();
-            }
-
-            for (String city1 : community.getCities()) {
-                for (String city2 : community.getCityNeighbors(city1)) {
-                    writer.write("route(" + city1 + "," + city2 + ").");
-                    writer.newLine();
+            // Save roads
+            for (Map.Entry<String, List<String>> entry : community.getRoadMap().entrySet()) {
+                String city1 = entry.getKey();
+                for (String city2 : entry.getValue()) {
+                    writer.println("route(" + city1 + "," + city2 + ").");
                 }
             }
 
+            // Save recharge zones
+            for (String city : community.getCitiesWithRechargeZone()) {
+                writer.println("recharge(" + city + ").");
+            }
+
+            System.out.println("La communauté a été sauvegardée dans le fichier : community");
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'enregistrement de la communauté dans le fichier.");
             e.printStackTrace();
         }
     }
 
-    public static Community loadCommunityFromFile(String filePath) {
-        Community community = Community.getInstance();
-
+    public static void loadCommunityFromFileAndUpdate(Community community, String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Supposons que le fichier est bien formaté et que chaque ligne est correcte.
-                community.completeConfiguration();
-                if (line.startsWith("ville(")) {
-                    String cityName = line.substring(6, line.length() - 2);
-                    community.addCity(cityName);
-                } else if (line.startsWith("recharge(")) {
-                    String cityName = line.substring(9, line.length() - 2);
-                    community.addRechargeZone(cityName);
-                } else if (line.startsWith("route(")) {
-                    String[] cities = line.substring(6, line.length() - 2).split(",");
-                    community.addRoad(cities[0], cities[1]);
-                }
+                processLineAndUpdateCommunity(line, community);
             }
-
+            System.out.println("La communauté a été chargée à partir du fichier : community");
         } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du fichier de la communauté.");
             e.printStackTrace();
         }
+    }
 
-        return community;
+    private static void processLineAndUpdateCommunity(String line, Community community) {
+        if (line.startsWith("ville(")) {
+            // Extract city name from the line and convert to lowercase
+            String cityName = line.substring(6, line.length() - 2).toLowerCase();
+            community.addCity(cityName);
+        } else if (line.startsWith("route(")) {
+            // Extract city names from the line and convert to lowercase
+            String[] parts = line.substring(6, line.length() - 2).split(",");
+            if (parts.length == 2) {
+                community.addRoad(parts[0].toLowerCase(), parts[1].toLowerCase());
+            }
+        } else {
+            System.out.println("Unrecognized line: " + line);
+        }
     }
 }

@@ -1,43 +1,60 @@
-# Projet de Communauté d'Agglomération
+# Gestionnaire de Villes et Routes pour la Communauté d'Agglomération
 
-Ce projet implémente un système de gestion pour une Communauté d'Agglomération, permettant la configuration des villes, l'ajout de routes et de zones de recharge.
+## Étapes de Fonctionnement
 
-## Utilisation
+1. **Lancement du Programme :** Exécutez la classe `Main` pour démarrer le gestionnaire de la Communauté d'Agglomération.
 
-1. Exécutez le programme à partir de la classe `Main`.
-2. Suivez les instructions pour configurer la Communauté d'Agglomération.
-3. Ajoutez des routes entre les villes et définissez des zones de recharge.
-4. Consultez les informations affichées à chaque ajout pour les routes et les zones de recharge.
+2. **Configuration de la Communauté :**
+    - Choisissez l'option 1 pour configurer la communauté.
+    - Indiquez le nombre de villes dans la CA.
+    - Entrez le nom de chaque ville, en suivant les instructions.
+    - Terminez la configuration en choisissant l'option 3 dans le menu de configuration.
 
-## Classes
+3. **Ajout de Routes :**
+    - Choisissez l'option 1 dans le menu principal.
+    - Indiquez le nom de la ville de départ et d'arrivée pour chaque route.
 
-### 1. Main
+4. **Ajout/Retrait de Zones de Recharge :**
+    - Choisissez l'option 2 dans le menu principal.
+    - Indiquez le nom de la ville pour ajouter ou retirer une zone de recharge.
+    - Suivez les instructions pour ajouter ou retirer une zone.
 
-La classe principale qui gère l'interface utilisateur et les interactions avec l'utilisateur.
+5. **Sauvegarde et Chargement :**
+    - Choisissez l'option 2 pour sauvegarder la communauté dans un fichier ou l'option 3 pour charger à partir d'un fichier.
+    - Le fichier est sauvegardé ou chargé dans le répertoire spécifié.
 
-### 2. RechargeZoneObserver
+6. **Fin du Programme :**
+    - Choisissez l'option 4 pour quitter le programme.
 
-Un observateur qui réagit aux changements dans la Communauté d'Agglomération, en affichant des messages à chaque ajout de route ou de zone de recharge.
+## Corrections et Améliorations
 
-### 3. Community
+- **Prise en Compte de la Casse:**
+  - Les noms de villes sont désormais insensibles à la casse.
+  - La vérification des doublons a été améliorée pour éviter les noms de villes en majuscules ou minuscules différents.
 
-La classe principale représentant la Communauté d'Agglomération. Gère l'ajout de villes, de routes et de zones de recharge.
+- **Affichage Approprié:**
+  - Lors de l'ajout de routes, seul le nom de la ville est affiché, au lieu du chemin complet.
 
-### 4. City
+- **Gestion des Doublons:**
+  - Lors de la configuration, si une ville avec le même nom existe déjà (indépendamment de la casse), un message d'erreur est affiché, et aucune nouvelle ville n'est ajoutée.
 
-Une classe représentant une ville au sein de la Communauté d'Agglomération.
+## Structure du Projet
 
-## Exemple d'interaction
-
-- Ajout de villes : Paris, Lyon, Marseille
-- Ajout de routes : Paris à Lyon, Marseille à Lyon
-- Ajout de zones de recharge : Paris, Marseille
-- Suppression de la zone de recharge à Paris
+- La gestion de la Communauté est centralisée dans la classe `Community`.
+- Les villes sont représentées par la classe `City`.
+- Les zones de recharge sont gérées par la classe `RechargeZone`.
+- L'observateur `RechargeZoneObserver` réagit aux changements dans la Communauté.
 
 ## Auteurs
 
-Ryan MANGOMBE / Maciva Moubarki / Wassim CHIKHI
+- Wassim CHIKHI
+- Maciva Moubarki
+
 
 ## Licence
 
-Ce projet est sous licence [MIT](LICENSE).
+Ce projet est sous licence MIT.
+
+## Notes Additionnelles pour l'Étudiant
+
+Le projet a été amélioré pour répondre aux exigences spécifiques. Les corrections apportées sont décrites dans la section "Corrections et Améliorations". Assurez-vous de suivre les étapes détaillées pour tirer le meilleur parti du gestionnaire de la Communauté d'Agglomération.
